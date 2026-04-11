@@ -2,7 +2,7 @@
 
 Ask a question in plain English. Get back a SQL query and real results from the database. No SQL knowledge required.
 
-> **Audience:** This README is written for interns and new contributors. No prior knowledge of LLMs or vector databases is assumed.
+> **Audience:** This README is written for new contributors. No prior knowledge of LLMs or vector databases is assumed.
 
 ---
 
@@ -40,7 +40,7 @@ The underlying database is a **star-schema** data warehouse built on the [Olist 
 
 ## 2. The Problem With "Typical" Text-to-SQL
 
-When an intern first tries to build a text-to-SQL system, the obvious approach is:
+When someone first tries to build a text-to-SQL system, the obvious approach is usually:
 
 > *"I'll just paste the entire database schema into the LLM prompt and ask it to write a query."*
 
