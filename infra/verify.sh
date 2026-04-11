@@ -6,7 +6,7 @@
 set -e  # Exit on first failure so the operator sees exactly where things broke
 
 APP_DIR="${APP_DIR:-/opt/text-to-sql}"
-PUBLIC_IP=$(curl -sf http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null || echo "unknown")
+PUBLIC_IP=$(curl -sf --connect-timeout 2 --max-time 5 http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null || echo "unknown")
 
 echo "================================================="
 echo "  Text-to-SQL Deployment Verification"
