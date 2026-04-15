@@ -34,7 +34,10 @@ from model.schema import (
 )
 
 load_dotenv()
-logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"), format="%(asctime)s %(levelname)s: %(message)s")
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(asctime)s %(levelname)s: %(message)s",
+)
 logger = logging.getLogger(__name__)
 
 RAW_DIR = Path(__file__).parent / "raw"
@@ -131,12 +134,19 @@ def load_dim_products(products_df: pd.DataFrame, engine) -> None:
     logger.info("Loading dim_products (%d rows)...", len(products_df))
     records = []
     for _, row in products_df.iterrows():
-        category_raw = row.get("product_category_name_english") or row.get("product_category_name") or ""
+        category_raw = (
+            row.get("product_category_name_english")
+            or row.get("product_category_name")
+            or ""
+        )
         records.append(
             {
                 "product_id": str(row["product_id"]),
-                "category_name": str(category_raw).strip().replace("_", " ").title() or None,
-                "photos_qty": int(row["product_photos_qty"]) if pd.notna(row.get("product_photos_qty")) else 0,
+                "category_name": str(category_raw).strip().replace("_", " ").title()
+                or None,
+                "photos_qty": int(row["product_photos_qty"])
+                if pd.notna(row.get("product_photos_qty"))
+                else 0,
             }
         )
 
@@ -173,28 +183,45 @@ def load_dim_sellers(sellers_df: pd.DataFrame, engine) -> None:
 
 
 def load_dim_geography(geo_df: pd.DataFrame, engine) -> None:
-    """Load dim_geography from olist_geolocation_dataset.csv (deduplicated by zip+city)."""
+    """Load dim_geography from olist_geolocation_dataset.csv (deduplicated by normalized zip+city)."""
     logger.info("Loading dim_geography (raw %d rows)...", len(geo_df))
-    geo_dedup = geo_df.drop_duplicates(subset=["geolocation_zip_code_prefix", "geolocation_city"])
-    records = [
-        {
-            "zip_code_prefix": str(row["geolocation_zip_code_prefix"]).zfill(5),
-            "city": str(row.get("geolocation_city", "")).strip().title() or None,
-            "state": str(row.get("geolocation_state", "")).strip().upper() or None,
-            "lat": float(row["geolocation_lat"]) if pd.notna(row.get("geolocation_lat")) else None,
-            "lng": float(row["geolocation_lng"]) if pd.notna(row.get("geolocation_lng")) else None,
-        }
-        for _, row in geo_dedup.iterrows()
-    ]
+    records = []
+    for _, row in geo_df.iterrows():
+        zip_code_prefix = str(row["geolocation_zip_code_prefix"]).zfill(5)
+        city = str(row.get("geolocation_city", "")).strip().title() or None
+        state = str(row.get("geolocation_state", "")).strip().upper() or None
+        records.append(
+            {
+                "zip_code_prefix": zip_code_prefix,
+                "city": city,
+                "state": state,
+                "lat": float(row["geolocation_lat"])
+                if pd.notna(row.get("geolocation_lat"))
+                else None,
+                "lng": float(row["geolocation_lng"])
+                if pd.notna(row.get("geolocation_lng"))
+                else None,
+            }
+        )
+
+    seen: set[tuple[str, str | None]] = set()
+    unique_records = []
+    for record in records:
+        key = (record["zip_code_prefix"], record["city"])
+        if key not in seen:
+            seen.add(key)
+            unique_records.append(record)
 
     from sqlalchemy.orm import Session
 
     with Session(engine) as session:
-        for chunk_start in range(0, len(records), 2000):
-            chunk = records[chunk_start : chunk_start + 2000]
+        for chunk_start in range(0, len(unique_records), 2000):
+            chunk = unique_records[chunk_start : chunk_start + 2000]
             session.bulk_insert_mappings(DimGeography, chunk)
             session.commit()
-    logger.info("dim_geography loaded: %d unique zip+city combinations.", len(records))
+    logger.info(
+        "dim_geography loaded: %d unique zip+city combinations.", len(unique_records)
+    )
 
 
 def load_fact_orders(
@@ -217,7 +244,9 @@ def load_fact_orders(
     records = []
     for _, row in merged.iterrows():
         price = float(row["price"]) if pd.notna(row.get("price")) else 0.0
-        freight = float(row["freight_value"]) if pd.notna(row.get("freight_value")) else 0.0
+        freight = (
+            float(row["freight_value"]) if pd.notna(row.get("freight_value")) else 0.0
+        )
         cust_id = str(row.get("customer_id", ""))
         unique_id = cust_map.get(cust_id, cust_id)
         order_date_raw = row.get("order_purchase_timestamp")
@@ -233,8 +262,12 @@ def load_fact_orders(
             {
                 "order_id": str(row["order_id"]),
                 "user_id": unique_id if unique_id else None,
-                "product_id": str(row["product_id"]) if pd.notna(row.get("product_id")) else None,
-                "seller_id": str(row["seller_id"]) if pd.notna(row.get("seller_id")) else None,
+                "product_id": str(row["product_id"])
+                if pd.notna(row.get("product_id"))
+                else None,
+                "seller_id": str(row["seller_id"])
+                if pd.notna(row.get("seller_id"))
+                else None,
                 "order_total_usd": round(price * BRL_TO_USD, 4),
                 "freight_value_usd": round(freight * BRL_TO_USD, 4),
                 "order_status": str(row.get("order_status", "unknown")).strip(),
@@ -249,7 +282,11 @@ def load_fact_orders(
             chunk = records[chunk_start : chunk_start + 2000]
             session.bulk_insert_mappings(FactOrders, chunk)
             session.commit()
-            logger.info("  fact_orders: inserted rows %d–%d", chunk_start, chunk_start + len(chunk))
+            logger.info(
+                "  fact_orders: inserted rows %d–%d",
+                chunk_start,
+                chunk_start + len(chunk),
+            )
     logger.info("fact_orders loaded: %d rows.", len(records))
 
 
@@ -262,8 +299,12 @@ def load_dim_reviews(reviews_df: pd.DataFrame, engine) -> None:
         {
             "review_id": str(row["review_id"]),
             "order_id": str(row["order_id"]),
-            "review_score": int(row["review_score"]) if pd.notna(row.get("review_score")) else None,
-            "review_comment": str(row["review_comment_message"]) if pd.notna(row.get("review_comment_message")) else None,
+            "review_score": int(row["review_score"])
+            if pd.notna(row.get("review_score"))
+            else None,
+            "review_comment": str(row["review_comment_message"])
+            if pd.notna(row.get("review_comment_message"))
+            else None,
         }
         for _, row in reviews_dedup.iterrows()
     ]
@@ -306,7 +347,9 @@ def seed() -> None:
         with engine.connect() as conn:
             count = conn.execute(sqtext("SELECT COUNT(*) FROM fact_orders")).scalar()
             if count and count > 0:
-                logger.info("Database already seeded (%d fact_orders rows). Skipping.", count)
+                logger.info(
+                    "Database already seeded (%d fact_orders rows). Skipping.", count
+                )
                 return
 
     logger.info("Reading CSV files from %s...", RAW_DIR)
@@ -322,7 +365,9 @@ def seed() -> None:
     translation_path = RAW_DIR / "product_category_name_translation.csv"
     if translation_path.exists():
         translations = pd.read_csv(translation_path)
-        products_df = products_df.merge(translations, on="product_category_name", how="left")
+        products_df = products_df.merge(
+            translations, on="product_category_name", how="left"
+        )
 
     # Load dimensions first (referenced by foreign keys)
     load_dim_users(customers_df, engine)

@@ -31,10 +31,17 @@ class Base(DeclarativeBase):
 class FactOrders(Base):
     __tablename__ = "fact_orders"
 
-    order_id = Column(String(64), primary_key=True)
-    user_id = Column(String(64), ForeignKey("dim_users.user_id"), nullable=True, index=True)
-    product_id = Column(String(64), ForeignKey("dim_products.product_id"), nullable=True, index=True)
-    seller_id = Column(String(64), ForeignKey("dim_sellers.seller_id"), nullable=True, index=True)
+    fact_order_id = Column(Integer, primary_key=True, autoincrement=True)
+    order_id = Column(String(64), nullable=False, index=True)
+    user_id = Column(
+        String(64), ForeignKey("dim_users.user_id"), nullable=True, index=True
+    )
+    product_id = Column(
+        String(64), ForeignKey("dim_products.product_id"), nullable=True, index=True
+    )
+    seller_id = Column(
+        String(64), ForeignKey("dim_sellers.seller_id"), nullable=True, index=True
+    )
     order_total_usd = Column(Numeric(12, 2), nullable=False, default=0)
     freight_value_usd = Column(Numeric(12, 2), nullable=False, default=0)
     order_status = Column(String(32), nullable=False, default="unknown")
@@ -43,7 +50,6 @@ class FactOrders(Base):
     user = relationship("DimUsers", back_populates="orders")
     product = relationship("DimProducts", back_populates="orders")
     seller = relationship("DimSellers", back_populates="orders")
-    review = relationship("DimReviews", back_populates="order", uselist=False)
 
 
 class DimUsers(Base):
@@ -88,18 +94,18 @@ class DimGeography(Base):
     lat = Column(Float, nullable=True)
     lng = Column(Float, nullable=True)
 
-    __table_args__ = (UniqueConstraint("zip_code_prefix", "city", name="uq_geo_zip_city"),)
+    __table_args__ = (
+        UniqueConstraint("zip_code_prefix", "city", name="uq_geo_zip_city"),
+    )
 
 
 class DimReviews(Base):
     __tablename__ = "dim_reviews"
 
     review_id = Column(String(64), primary_key=True)
-    order_id = Column(String(64), ForeignKey("fact_orders.order_id"), nullable=False, index=True, unique=True)
+    order_id = Column(String(64), nullable=False, index=True)
     review_score = Column(Integer, nullable=True)
     review_comment = Column(Text, nullable=True)
-
-    order = relationship("FactOrders", back_populates="review")
 
 
 class QueryLog(Base):

@@ -1,0 +1,10 @@
+What is the total revenue by product category?
+Which sellers have the highest average order value?
+How many orders were delivered versus canceled in 2018?
+What are the top 10 product categories by total sales in USD?
+Which states have the most delivered orders?
+What is the average freight cost by seller state?
+Who are the top 5 customers by total order amount?
+Show the monthly revenue trend for 2017.
+What is the average review score by product category?
+Which products have the highest number of canceled orders?
