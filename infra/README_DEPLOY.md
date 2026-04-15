@@ -1,6 +1,6 @@
 # Text-to-SQL Deployment Guide
 
-Complete guide to deploying the Text-to-SQL system on AWS EC2 (Ubuntu 22.04).
+Complete guide to deploying the Text-to-SQL system on AWS EC2 (Ubuntu 22.04)
 
 ---
 

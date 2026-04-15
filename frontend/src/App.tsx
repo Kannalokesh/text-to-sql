@@ -3,11 +3,13 @@ import ChatWindow from './components/ChatWindow'
 import SchemaExplorer from './components/SchemaExplorer'
 import ApprovalModal from './components/ApprovalModal'
 import { getSchema, postApprove, type SchemaTable, type QueryResponse } from './api'
+import type { ChartType } from './components/ChartPanel.tsx'
 
 export interface Message {
   id: string
   type: 'question' | 'answer' | 'error'
   content: QueryResponse | string
+  chartType?: ChartType
   timestamp: Date
 }
 
@@ -15,7 +17,7 @@ export default function App() {
   const [messages, setMessages] = useState<Message[]>([])
   const [schema, setSchema] = useState<SchemaTable[]>([])
   const [activeTables, setActiveTables] = useState<string[]>([])
-  const [pendingApproval, setPendingApproval] = useState<QueryResponse | null>(null)
+  const [pendingApproval, setPendingApproval] = useState<{ response: QueryResponse; chartType?: ChartType } | null>(null)
 
   useEffect(() => {
     getSchema()
@@ -23,9 +25,9 @@ export default function App() {
       .catch((err) => console.error('Failed to load schema:', err))
   }, [])
 
-  const handleAnswer = (response: QueryResponse) => {
+  const handleAnswer = (response: QueryResponse, chartType?: ChartType) => {
     if (response.requires_approval) {
-      setPendingApproval(response)
+      setPendingApproval({ response, chartType })
     }
     setActiveTables(response.tables_used)
     setMessages((prev) => [
@@ -34,6 +36,7 @@ export default function App() {
         id: crypto.randomUUID(),
         type: 'answer',
         content: response,
+        chartType,
         timestamp: new Date(),
       },
     ])
@@ -42,9 +45,9 @@ export default function App() {
   const handleApprove = async (approved: boolean) => {
     if (!pendingApproval) return
     try {
-      const result = await postApprove(pendingApproval.sql, approved)
+      const result = await postApprove(pendingApproval.response.sql, approved)
       const updatedResponse: QueryResponse = {
-        ...pendingApproval,
+        ...pendingApproval.response,
         results: result.results,
         requires_approval: false,
       }
@@ -54,6 +57,7 @@ export default function App() {
           id: crypto.randomUUID(),
           type: 'answer',
           content: updatedResponse,
+          chartType: pendingApproval.chartType,
           timestamp: new Date(),
         },
       ])
@@ -106,8 +110,8 @@ export default function App() {
       {/* Approval modal */}
       {pendingApproval && (
         <ApprovalModal
-          sql={pendingApproval.sql}
-          reason={pendingApproval.approval_reason || ''}
+          sql={pendingApproval.response.sql}
+          reason={pendingApproval.response.approval_reason || ''}
           onApprove={() => handleApprove(true)}
           onReject={() => {
             setPendingApproval(null)

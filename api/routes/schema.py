@@ -1,5 +1,5 @@
 """
-api/routes/schema.py — /api/schema endpoint.
+api/routes/schema.py — /api/schema endpoint to return the full semantic schema as JSON.
 """
 
 from fastapi import APIRouter

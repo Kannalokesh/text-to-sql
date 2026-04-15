@@ -13,7 +13,6 @@ sql_chain.py — LangChain LCEL pipeline: question → SQL → results.
 #   6. HITL check                         → flag writes for human approval
 #   7. Execute if approved (SELECT only)  → run against SQLite/PostgreSQL
 #   8. Log to query_log                   → observability + debugging
-#
 # temperature=0 is critical: we want the most deterministic SQL possible.
 # Any creativity in SQL generation leads to incorrect queries.
 """

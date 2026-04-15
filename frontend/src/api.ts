@@ -43,6 +43,7 @@ export async function getSchema(): Promise<SchemaTable[]> {
   return data
 }
 
+
 export async function getHealth(): Promise<Record<string, unknown>> {
   const { data } = await api.get<Record<string, unknown>>('/api/health')
   return data

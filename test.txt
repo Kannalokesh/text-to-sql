@@ -8,3 +8,13 @@ Who are the top 5 customers by total order amount?
 Show the monthly revenue trend for 2017.
 What is the average review score by product category?
 Which products have the highest number of canceled orders?
+Show me a pie chart of total revenue by product category
+Show a bar chart of total revenue by seller
+Show a line chart of monthly revenue trend
+Display a pie chart of orders by status
+Show a bar chart of delivered orders by state
+Show a line chart of average order value over time
+Display a bar chart of total freight cost by seller state
+Show a line chart of order count over time
+Show a pie chart of review score distribution
+Display a bar chart of top 10 product categories by revenue

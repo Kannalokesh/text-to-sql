@@ -1,5 +1,5 @@
 """
-api/routes/query.py — /api/query and /api/approve endpoints.
+api/routes/query.py — /api/query and /api/approve endpoints
 """
 
 import asyncio

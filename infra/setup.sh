@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# infra/setup.sh — Provision a bare Ubuntu 22.04 EC2 instance.
+# infra/setup.sh — Provision a bare Ubuntu 22.04 EC2 instance
 # Run as root or with sudo: sudo bash infra/setup.sh
 
 set -e  # Exit immediately on any error

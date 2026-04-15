@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# infra/install_app.sh — Install Python dependencies, seed DB, build frontend.
-# Run as ubuntu user AFTER setup.sh and configure_env.sh have been executed.
+# infra/install_app.sh — Install Python dependencies, seed DB, build frontend
+# Run as ubuntu user AFTER setup.sh and configure_env.sh have been executed
 
 set -e  # Exit immediately on any error
 

@@ -8,8 +8,8 @@ hitl_guard.py — Human-In-The-Loop safety guard for generated SQL.
 # The HITL guard intercepts any SQL before execution and flags write operations
 # for explicit human approval. The frontend shows an ApprovalModal, and the
 # user must type "CONFIRM" before the statement is actually run.
-# This creates a mandatory human checkpoint — the LLM can suggest writes but
-# a human must authorise them. Pure SELECT queries pass through automatically.
+# This creates a mandatory human checkpoint
+# the LLM can suggest writes but a human must authorise them. Pure SELECT queries pass through automatically.
 # In production, approval events should be logged with the approver's identity.
 """
 

@@ -37,5 +37,5 @@ printf '\n# Python logging level. Use INFO in production, DEBUG only for trouble
 printf 'LOG_LEVEL=%q\n' "$LOG_LEVEL"                >> "$ENV_FILE"
 
 chmod 600 "$ENV_FILE"   # Only owner (ubuntu) can read — prevents other users from seeing the key
-echo "✅ .env written to $ENV_FILE with permissions 600."
+echo " .env written to $ENV_FILE with permissions 600."
 echo "⚠  In production, consider using AWS Secrets Manager instead of a file."

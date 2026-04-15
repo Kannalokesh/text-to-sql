@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-Quick reference for the most common deployment issues.
+Quick reference for the most common deployment issues
 
 ---
 

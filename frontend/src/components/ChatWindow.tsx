@@ -2,18 +2,27 @@ import { useState, useRef, useEffect } from 'react'
 import { postQuery, type QueryResponse } from '../api'
 import SqlDisplay from './SqlDisplay'
 import ResultsTable from './ResultsTable'
+import ChartPanel, { type ChartType } from './ChartPanel.tsx'
 import type { Message } from '../App'
 
 interface Props {
   messages: Message[]
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>
-  onAnswer: (response: QueryResponse) => void
+  onAnswer: (response: QueryResponse, chartType?: ChartType) => void
 }
 
 export default function ChatWindow({ messages, setMessages, onAnswer }: Props) {
   const [question, setQuestion] = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  const getChartType = (question: string): ChartType | undefined => {
+    const normalized = question.toLowerCase()
+    if (normalized.includes('pie chart') || normalized.includes('pie')) return 'pie'
+    if (normalized.includes('bar chart') || normalized.includes('bar graph') || normalized.includes('bar')) return 'bar'
+    if (normalized.includes('line chart') || normalized.includes('line graph') || normalized.includes('trend') || normalized.includes('over time')) return 'line'
+    return undefined
+  }
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -35,7 +44,8 @@ export default function ChatWindow({ messages, setMessages, onAnswer }: Props) {
 
     try {
       const response = await postQuery(q)
-      onAnswer(response)
+      const chartType = getChartType(q)
+      onAnswer(response, chartType)
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : String(err)
       setMessages((prev) => [
@@ -117,6 +127,9 @@ export default function ChatWindow({ messages, setMessages, onAnswer }: Props) {
                         requiresApproval={r.requires_approval}
                         approvalReason={r.approval_reason}
                       />
+                      {r.results.length > 0 && msg.chartType && (
+                        <ChartPanel results={r.results} chartType={msg.chartType} />
+                      )}
                       {r.results.length > 0 && <ResultsTable results={r.results} />}
                       {r.results.length === 0 && !r.requires_approval && (
                         <div style={{

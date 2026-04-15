@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# infra/verify.sh — Verify all layers of the stack are healthy.
+# infra/verify.sh — Verify all layers of the stack are healthy
 # Run after deployment: bash infra/verify.sh
 # Expected output: all checks PASS.
 

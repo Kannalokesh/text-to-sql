@@ -1,7 +1,7 @@
 # INTERN NOTE: Factory pattern for database engine creation
 # This lets us swap between SQLite (dev) and PostgreSQL (prod)
 # by only changing the DATABASE_URL env var. The application
-# code never needs to know which database it's talking to.
+# code never needs to know which database it's talking to
 # The engine and sessionmaker are cached at module level so that
 # connection-pool resources (file handles, sockets) are shared across
 # all requests instead of being recreated on every call.

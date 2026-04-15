@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Text-to-SQL API",
-    description="Natural-language to SQL query engine powered by GPT-4o and ChromaDB.",
+    description="Natural-language to SQL query engine powered by GPT-4o-mini and ChromaDB.",
     version="1.0.0",
 )
 

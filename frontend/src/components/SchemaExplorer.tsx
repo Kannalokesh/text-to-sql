@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { SchemaTable } from '../api'
 
+
 interface Props {
   schema: SchemaTable[]
   activeTables: string[]

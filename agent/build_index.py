@@ -10,8 +10,8 @@ Run this once after setting up your environment:
 # exceed the context window and add noise. Instead we pre-embed each table's
 # schema (name + description + column descriptions) into a vector store.
 # At query time, we embed the user's question and do a similarity search to
-# retrieve only the 2-3 most relevant tables. This is Retrieval-Augmented
-# Generation (RAG): retrieve → augment prompt → generate SQL.
+# retrieve only the 2-3 most relevant tables. 
+# This is Retrieval-Augmented Generation (RAG): retrieve → augment prompt → generate SQL.
 # The vectors are persisted to disk so we don't re-embed on every restart.
 """
 

@@ -1,5 +1,5 @@
 """
-api/routes/health.py — /api/health liveness and readiness check.
+api/routes/health.py — /api/health liveness and readiness check
 """
 
 import logging

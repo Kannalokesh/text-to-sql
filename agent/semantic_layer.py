@@ -1,5 +1,5 @@
 # INTERN NOTE: Semantic layer concept
-# Raw table/column names like "order_total_usd" or "is_active_member" are
+# Raw table and/or column names like "order_total_usd" or "is_active_member" are
 # meaningful to engineers but ambiguous to LLMs without business context.
 # The semantic layer maps each column to its business meaning, valid value
 # ranges, and usage rules. When injected into the LLM prompt, it dramatically

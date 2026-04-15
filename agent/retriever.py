@@ -2,8 +2,7 @@
 retriever.py — RAG-based schema retrieval from ChromaDB.
 
 # INTERN NOTE: RAG retrieval explained
-# At query time we embed the user's natural-language question (e.g. "top
-# revenue by category") using the same model that was used during indexing.
+# At query time we embed the user's natural-language question (e.g. "top revenue by category") using the same model that was used during indexing.
 # ChromaDB performs an approximate nearest-neighbor (ANN) cosine similarity
 # search and returns the k most semantically similar table schemas.
 # We then format those schemas as a compact text block and inject them into

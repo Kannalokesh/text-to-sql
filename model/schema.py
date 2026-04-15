@@ -2,7 +2,7 @@
 # A star schema separates measurable business events (facts) from
 # descriptive attributes (dimensions). fact_orders is the central table
 # holding numeric metrics (revenue, freight) while dim_* tables hold
-# slow-changing descriptors (user city, product category, seller location).
+# slow-changing descriptors (user city, product category, seller location)
 # This makes aggregation queries fast: GROUP BY on a dim column, SUM on a
 # fact column, joined by surrogate keys. It also mirrors how analysts think:
 # "revenue BY category" = fact JOIN dim_products GROUP BY category_name.

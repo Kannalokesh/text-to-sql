@@ -1,6 +1,6 @@
-.env
 *.db
 chroma_store/
+.env
 venv/
 frontend/dist/
 __pycache__/
