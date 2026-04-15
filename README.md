@@ -19,7 +19,7 @@ Convert plain English questions into SQL, run the query, and return results from
 ## Quick start
 
 ```bash
-git clone https://github.com/nerdjerry/text-to-sql.git
+git clone https://github.com/Kannalokesh/text-to-sql.git
 cd text-to-sql
 pip install -r requirements.txt
 cp .env.example .env
