@@ -21,12 +21,16 @@ Convert plain English questions into SQL, run the query, and return results from
 ```bash
 git clone https://github.com/Kannalokesh/text-to-sql.git
 cd text-to-sql
+
 pip install -r requirements.txt
 cp .env.example .env
 # edit .env and set OPENAI_API_KEY
+
 python -m data.seed
 python -m agent.build_index
+
 uvicorn api.main:app --reload --port 8000
+
 cd frontend
 npm install
 npm run dev
